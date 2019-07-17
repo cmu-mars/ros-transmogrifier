@@ -80,7 +80,11 @@ RUN rosinstall_generator desktop_full --rosdistro kinetic --deps --wet-only --ta
 ENV TURTLEBOT3_MODEL burger
 RUN echo "source $HOME/ros1_src/kinetic/install_isolated/setup.bash" >> .bashrc
 
+# The environment variable QT_X11_NO_MITSHM was added to solve the issue described here:
+# https://github.com/osrf/docker_images/issues/21
 ENV QT_X11_NO_MITSHM 1
+# The environment variable SVGA_VGPU was added to solve the issue described here:
+# http://answers.gazebosim.org/question/13214/virtual-machine-not-launching-gazebo/
 ENV SVGA_VGPU10 0
 ENTRYPOINT source $HOME/ros1_src/kinetic/install_isolated/setup.bash \
     && roslaunch turtlebot3_gazebo turtlebot3_world.launch
