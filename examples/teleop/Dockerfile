@@ -86,7 +86,17 @@ ENV QT_X11_NO_MITSHM 1
 # The environment variable SVGA_VGPU was added to solve the issue described here:
 # http://answers.gazebosim.org/question/13214/virtual-machine-not-launching-gazebo/
 ENV SVGA_VGPU10 0
-ENTRYPOINT source $HOME/ros1_src/kinetic/install_isolated/setup.bash \
-    && exec roslaunch turtlebot3_gazebo turtlebot3_world.launch
+
+# From the bash man pages:
+# When  bash  is started non-interactively, to run a shell script, for example,
+# it looks for the variable BASH_ENV in the environment, expands its value if it
+# appears there, and uses the expanded value as the name of a file to read and
+# execute.  Bash behaves as if the following command were executed:
+#     if [ -n "$BASH_ENV" ]; then . "$BASH_ENV"; fi
+# but the value of the PATH variable is not used to search for the filename.
+ENV BASH_ENV $HOME/ros1_src/kinetic/install_isolated/setup.bash
+ENTRYPOINT exec roslaunch turtlebot3_gazebo turtlebot3_world.launch
+#ENTRYPOINT source $HOME/ros1_src/kinetic/install_isolated/setup.bash \
+#    && exec roslaunch turtlebot3_gazebo turtlebot3_world.launch
 
 ENV DEBIAN_FRONTEND teletype
