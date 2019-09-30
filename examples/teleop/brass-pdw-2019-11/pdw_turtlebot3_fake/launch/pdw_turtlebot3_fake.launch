@@ -1,0 +1,17 @@
+<launch>
+  <arg name="model" default="$(env TURTLEBOT3_MODEL)" doc="model type [burger, waffle, waffle_pi]"/>
+
+  <param name="tb3_model" value="$(arg model)"/>
+
+  <include file="$(find pdw_turtlebot3_fake)/launch/includes/description.launch.xml">
+    <arg name="model" value="$(arg model)" />
+  </include>
+
+  <node pkg="pdw_turtlebot3_fake" type="pdw_turtlebot3_fake_node" name="pdw_turtlebot3_fake_node" output="screen" />
+
+  <node pkg="pdw_robot_state_publisher" type="pdw_robot_state_publisher" name="pdw_robot_state_publisher" output="screen">
+    <param name="publish_frequency" type="double" value="50.0" />
+  </node>
+
+  <!--<node name="rviz" pkg="rviz" type="rviz" args="-d $(find pdw_turtlebot3_fake)/rviz/pdw_turtlebot3_fake.rviz"/>-->
+</launch>
