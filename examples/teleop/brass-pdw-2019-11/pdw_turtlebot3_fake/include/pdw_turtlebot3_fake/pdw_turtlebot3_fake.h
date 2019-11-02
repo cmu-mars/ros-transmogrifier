@@ -23,19 +23,11 @@
 
 #include <ros/ros.h>
 #include <ros/time.h>
-//#include <std_msgs/Int32.h>
-//#include <sensor_msgs/Imu.h>
 #include <sensor_msgs/JointState.h>
-//#include <geometry_msgs/Vector3.h>
 #include <geometry_msgs/Twist.h>
 #include <geometry_msgs/TransformStamped.h>
-//#include <tf/tf.h>
 #include <tf/transform_broadcaster.h>
 #include <nav_msgs/Odometry.h>
-
-//#include <turtlebot3_msgs/SensorState.h>
-
-//#include "turtlebot3_fake.h"
 
 #define WHEEL_RADIUS                    0.033     // meter
 
