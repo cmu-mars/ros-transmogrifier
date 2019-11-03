@@ -64,7 +64,7 @@ JointStateListener::JointStateListener(const KDL::Tree& tree, const MimicMap& m,
   std::string tf_prefix_key;
   n_tilde.searchParam("tf_prefix", tf_prefix_key);
   n_tilde.param(tf_prefix_key, tf_prefix_, std::string(""));
-  publish_interval_ = ros::Duration(1.0/max(publish_freq, 1.0));
+  //publish_interval_ = ros::Duration(1.0/max(publish_freq, 1.0));
 
   // Setting tcpNoNelay tells the subscriber to ask publishers that connect
   // to set TCP_NODELAY on their side. This prevents some joint_state messages
