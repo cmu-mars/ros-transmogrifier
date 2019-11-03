@@ -66,13 +66,13 @@ public:
 
 protected:
   virtual void callbackJointState(const JointStateConstPtr& state);
-  virtual void callbackFixedJoint(const ros::TimerEvent& e);
+  //virtual void callbackFixedJoint(const ros::TimerEvent& e);
 
   std::string tf_prefix_;
   Duration publish_interval_;
   robot_state_publisher::RobotStatePublisher state_publisher_;
   Subscriber joint_state_sub_;
-  ros::Timer timer_;
+  //ros::Timer timer_;
   ros::Time last_callback_time_;
   std::map<std::string, ros::Time> last_publish_time_;
   MimicMap mimic_;

@@ -78,7 +78,8 @@ JointStateListener::JointStateListener(const KDL::Tree& tree, const MimicMap& m,
 
   // trigger to publish fixed joints
   // if using static transform broadcaster, this will be a oneshot trigger and only run once
-  timer_ = n_tilde.createTimer(publish_interval_, &JointStateListener::callbackFixedJoint, this, use_tf_static_);
+  //timer_ = n_tilde.createTimer(publish_interval_, &JointStateListener::callbackFixedJoint, this, use_tf_static_);
+  state_publisher_.publishFixedTransforms(tf_prefix_, use_tf_static_);
 }
 
 
@@ -86,11 +87,11 @@ JointStateListener::~JointStateListener()
 {}
 
 
-void JointStateListener::callbackFixedJoint(const ros::TimerEvent& e)
+/*void JointStateListener::callbackFixedJoint(const ros::TimerEvent& e)
 {
   (void)e;
   state_publisher_.publishFixedTransforms(tf_prefix_, use_tf_static_);
-}
+}*/
 
 void JointStateListener::callbackJointState(const JointStateConstPtr& state)
 {
@@ -115,23 +116,23 @@ void JointStateListener::callbackJointState(const JointStateConstPtr& state)
     ROS_WARN("Moved backwards in time (probably because ROS clock was reset), re-publishing joint transforms!");
     last_publish_time_.clear();
   }
-  ros::Duration warning_threshold(30.0);
+  /*ros::Duration warning_threshold(30.0);
   if ((state->header.stamp + warning_threshold) < now) {
     ROS_WARN_THROTTLE(10, "Received JointState is %f seconds old.", (now - state->header.stamp).toSec());
-  }
+  }*/
   last_callback_time_ = now;
 
   // determine least recently published joint
-  ros::Time last_published = now;
+  /*ros::Time last_published = now;
   for (unsigned int i=0; i<state->name.size(); i++) {
     ros::Time t = last_publish_time_[state->name[i]];
     last_published = (t < last_published) ? t : last_published;
-  }
+  }*/
   // note: if a joint was seen for the first time,
   //       then last_published is zero.
 
   // check if we need to publish
-  if (ignore_timestamp_ || state->header.stamp >= last_published + publish_interval_) {
+  if (ignore_timestamp_ || true/*state->header.stamp >= last_published + publish_interval_*/) {
     // get joint positions from state message
     map<string, double> joint_positions;
     for (unsigned int i=0; i<state->name.size(); i++) {
