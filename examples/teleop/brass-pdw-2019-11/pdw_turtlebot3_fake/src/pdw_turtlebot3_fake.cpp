@@ -100,7 +100,7 @@ bool Turtlebot3Fake::init()
   cmd_vel_sub_  = nh_.subscribe("cmd_vel", 100,  &Turtlebot3Fake::commandVelocityCallback, this);
 
   prev_update_time_ = ros::Time::now();
-  last_cmd_vel_time_ = ros::Time.now();
+  last_cmd_vel_time_ = ros::Time::now();
 
   return true;
 }

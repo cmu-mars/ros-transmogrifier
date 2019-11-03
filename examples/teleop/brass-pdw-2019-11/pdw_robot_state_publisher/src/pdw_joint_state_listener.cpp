@@ -74,6 +74,8 @@ JointStateListener::JointStateListener(const KDL::Tree& tree, const MimicMap& m,
   // subscribe to joint state
   joint_state_sub_ = n.subscribe("joint_states", 1, &JointStateListener::callbackJointState, this, transport_hints);
 
+  last_callback_time_ = ros::Time::now();
+
   // trigger to publish fixed joints
   // if using static transform broadcaster, this will be a oneshot trigger and only run once
   timer_ = n_tilde.createTimer(publish_interval_, &JointStateListener::callbackFixedJoint, this, use_tf_static_);
