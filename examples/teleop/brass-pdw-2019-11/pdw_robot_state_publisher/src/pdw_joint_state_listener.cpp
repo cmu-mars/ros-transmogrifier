@@ -34,17 +34,12 @@
 
 /* Author: Wim Meeussen */
 
-//#include <ros/ros.h>
-//#include <urdf/model.h>
-//#include <kdl/tree.hpp>
 #include <kdl_parser/kdl_parser.hpp>
 
-//#include "robot_state_publisher/robot_state_publisher.h"
 #include "pdw_robot_state_publisher/pdw_joint_state_listener.h"
 
 using namespace std;
 using namespace ros;
-//using namespace KDL;
 using namespace robot_state_publisher;
 
 JointStateListener::JointStateListener(const KDL::Tree& tree, const MimicMap& m, const urdf::Model& model)

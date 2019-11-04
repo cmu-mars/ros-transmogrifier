@@ -34,8 +34,6 @@
 
 /* Author: Wim Meeussen */
 
-//#include <kdl/frames_io.hpp>
-//#include <geometry_msgs/TransformStamped.h>
 #include <tf2_kdl/tf2_kdl.h>
 
 #include "pdw_robot_state_publisher/pdw_robot_state_publisher.h"

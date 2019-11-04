@@ -45,9 +45,7 @@
 
 #include "pdw_robot_state_publisher/pdw_robot_state_publisher.h"
 
-//using namespace std;
 using namespace ros;
-//using namespace KDL;
 
 typedef boost::shared_ptr<sensor_msgs::JointState const> JointStateConstPtr;
 typedef std::map<std::string, urdf::JointMimicSharedPtr > MimicMap;
