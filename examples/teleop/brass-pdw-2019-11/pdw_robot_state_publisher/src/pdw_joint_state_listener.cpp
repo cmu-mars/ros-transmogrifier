@@ -74,7 +74,6 @@ JointStateListener::JointStateListener(const KDL::Tree& tree, const MimicMap& m,
   // trigger to publish fixed joints
   // if using static transform broadcaster, this will be a oneshot trigger and only run once
   //timer_ = n_tilde.createTimer(publish_interval_, &JointStateListener::callbackFixedJoint, this, use_tf_static_);
-  state_publisher_.publishFixedTransforms(tf_prefix_, use_tf_static_);
 }
 
 
@@ -148,6 +147,7 @@ void JointStateListener::callbackJointState(const JointStateConstPtr& state)
       last_publish_time_[state->name[i]] = state->header.stamp;
     }
   }
+  state_publisher_.publishFixedTransforms(tf_prefix_, use_tf_static_);
 }
 
 // ----------------------------------
