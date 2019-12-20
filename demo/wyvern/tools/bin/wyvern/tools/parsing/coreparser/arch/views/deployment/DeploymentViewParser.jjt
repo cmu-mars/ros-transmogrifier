@@ -1,0 +1,123 @@
+options
+{
+    //BUILD_PARSER = false;
+	MULTI = true;
+	VISITOR = true;
+    STATIC = false;
+    USER_TOKEN_MANAGER = true;
+}
+
+PARSER_BEGIN(DeploymentViewParser)
+
+package wyvern.tools.parsing.coreparser.arch.views.deployment;
+
+import wyvern.tools.parsing.coreparser.TokenManager;
+import wyvern.tools.parsing.coreparser.Token;
+import wyvern.tools.parsing.coreparser.ParseException;
+
+public class DeploymentViewParser {
+
+}
+
+PARSER_END(DeploymentViewParser)
+
+TOKEN : /* Keywords */
+{
+  <DEPLOYMENT: "deployment">
+| <EXTENDS: "extends">
+}
+
+SPECIAL_TOKEN : /* Comments and whitespace */
+{
+  <SINGLE_LINE_COMMENT>
+| <MULTI_LINE_COMMENT>
+| <WHITESPACE>
+}
+
+TOKEN : /* Logical Formatting */
+{
+  <DEDENT>
+| <INDENT>
+| <NEWLINE>
+}
+
+TOKEN : /* Identifiers */
+{
+  <IDENTIFIER>
+}
+
+TOKEN : /* Symbols */
+{
+  <DOT>
+| <EQUALS>
+}
+
+TOKEN: /* Literals */
+{
+  <STRING_LITERAL>
+| <BOOLEAN_LITERAL>
+}
+
+SimpleNode DeploymentDecl() :
+{
+    Token name;
+    Token archName;
+}
+{
+    <DEPLOYMENT> name=<IDENTIFIER> <EXTENDS> archName=<IDENTIFIER>
+    <NEWLINE> <INDENT> Setters() <DEDENT>
+    {
+        jjtThis.setName(name.image);
+        jjtThis.setArchName(archName.image);
+        return jjtThis;
+    }
+}
+
+void Setters() #void:
+{ }
+{
+    Setter() (Setter())*
+}
+
+void Setter() :
+{ String lhs; Object rhs; }
+{
+    lhs=Lhs() <EQUALS> rhs=Rhs() <NEWLINE>
+    {
+        jjtThis.setLhs(lhs);
+        jjtThis.setRhs(rhs);
+    }
+}
+
+String Lhs() #void:
+{ String identifier, lhsRemaining; }
+{
+    identifier=Identifier() <DOT> lhsRemaining=LhsRemaining()
+    { return identifier + "." + lhsRemaining; }
+}
+
+String Identifier() #void:
+{ Token t; }
+{
+    t=<IDENTIFIER>
+    { return t.image; }
+}
+
+String LhsRemaining() #void:
+{ String identifier, lhsRemaining; }
+{
+    LOOKAHEAD(2)
+    identifier=Identifier() <DOT> lhsRemaining=LhsRemaining()
+    { return identifier + "." + lhsRemaining; }
+|
+    identifier=Identifier()
+    { return identifier; }
+}
+
+Object Rhs() #void:
+{ Token t; }
+{
+    t=<STRING_LITERAL> { return t.image; }
+|
+    t=<BOOLEAN_LITERAL> { return Boolean.parseBoolean(t.image); }
+}
