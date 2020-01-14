@@ -1,5 +1,0 @@
-resource type Resource
-    effect read
-    effect write
-    def read() : {this.read} Unit
-    def write() : {this.write} Unit

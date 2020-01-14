@@ -1,4 +1,0 @@
-import modules.arrowModuleImplementation1
-
-val method = arrowModuleImplementation1(() => unit)
-method.run()
