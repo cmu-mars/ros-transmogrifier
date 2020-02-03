@@ -1,4 +1,5 @@
 set -x
+set -m
 cd ../examples/teleop/brass-pdw-2019-11
 
 sudo docker build -t brass-pdw/teleop .
@@ -43,3 +44,18 @@ rm -r src
 rm pdw_turtlebot3_burger.urdf.xacro
 rm pdw_turtlebot3_fake_ros1.rviz
 rm pdw_turtlebot3_fake_ros2.rviz
+
+sudo docker run --rm --device=/dev/dri --group-add video --volume=/tmp/.X11-unix:/tmp/.X11-unix --env "DISPLAY=$DISPLAY" -ti brass-pdw/teleop-demo &
+
+sleep 5
+
+# The following commands will not work as expected if multiple containers have been started from the brass-pdw/teleop-demo image.
+# Get the container ID for the container that was started above.
+TELEOP_DEMO_CONTAINER_ID=$(sudo docker ps --filter ancestor=brass-pdw/teleop-demo -q)
+# Give this container the permission to connect to the X server.
+xhost +local:$TELEOP_DEMO_CONTAINER_ID
+
+fg
+
+# Remove permission to connect to the X server.
+xhost -local:$TELEOP_DEMO_CONTAINER_ID
