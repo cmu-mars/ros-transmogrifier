@@ -1,2 +1,25 @@
+import wyvern.collections.list
+import wyvern.archast
+import wyvern.ast
+import wyvern.option
+
 type ROS2TfProperties
 	val is_static: Boolean
+	metadata new
+		def checkPortCompatibility(l: list.List[archast.PortDecl]): Boolean
+			true
+
+		def generatePortCode(p: archast.PortDecl): ast.AST
+			var connectorIface: String = ""
+			var genCode: String = ""
+
+			if (p.getRequires() == "")
+					connectorIface = p.getProvides()
+					genCode = "module def TFMessageIface_requires_(node: ros.Node, tf_props: ROS2TfProperties)\n\nimport ros.messages.geometry_msgs.TransformStamped\nimport ros.ros2.cpp.messages.tf2_msgs.TFMessageCppImpl\nimport ros.tf.TfList\n\n// This can be optimized a little bit by creating the appropriate TransformBroadcaster object\n// by checking if tf_props.is_static is true or not, but it is okay for now. We only want to\n// show that connectors can be abstracted and the code for them can be generated.\nval node_id = node.get_node_identifier()\nval transform_broadcaster = TFMessageCppImpl.createTransformBroadcaster(node_id)\nval static_transform_broadcaster = TFMessageCppImpl.createStaticTransformBroadcaster(node_id)\n\ndef getTfConsumed(tf: TransformStamped): Unit\n\ttf_props.is_static.ifTrue(() => static_transform_broadcaster.sendTf(tf), () => transform_broadcaster.sendTf(tf))\n\ndef getTfListConsumed(tfList: TfList): Unit\n\ttf_props.is_static.ifTrue(() => static_transform_broadcaster.sendTfList(tfList), () => transform_broadcaster.sendTfList(tfList))"
+				else
+					connectorIface = p.getRequires()
+
+			ast.parseGeneratedModule(genCode)
+
+		def generateConnectorImpl(l: list.List[archast.PortDecl]): list.List[ast.AST]
+			l.map[ast.AST](p => this.generatePortCode(p))

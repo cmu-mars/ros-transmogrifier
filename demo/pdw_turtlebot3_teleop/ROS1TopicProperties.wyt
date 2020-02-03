@@ -1,2 +1,26 @@
+import wyvern.collections.list
+import wyvern.archast
+import wyvern.ast
+import wyvern.option
+
 type ROS1TopicProperties
 	val name: String
+	metadata new
+		def checkPortCompatibility(l: list.List[archast.PortDecl]): Boolean
+			true
+
+		def generatePortCode(p: archast.PortDecl): ast.AST
+			var connectorIface: String = ""
+			var genCode: String = ""
+
+			if (p.getRequires() == "")
+					connectorIface = p.getProvides()
+					genCode = "module def " + connectorIface + "_provides(node: ros.ROS, topic: ROS1TopicProperties, callback: " + connectorIface + ")\n\nimport ros.messages.sensor_msgs." + connectorIface.substring(0, connectorIface.length() - 5) + "\nimport ros.ros1.cpp.messages.sensor_msgs." + connectorIface.substring(0, connectorIface.length() - 5) + "CppImpl\n\nval sub = " + connectorIface.substring(0, connectorIface.length() - 5) + "CppImpl().createSubscriber(node.get_node_identifier(), topic.name, (m: " + connectorIface.substring(0, connectorIface.length() - 5) + ") => callback.getMsgConsumed(m))"
+				else
+					connectorIface = p.getRequires()
+					genCode = "module def " + connectorIface + "_requires(node: ros.Node, topic: ROS1TopicProperties)\n\nimport ros.messages.geometry_msgs." + connectorIface.substring(0, connectorIface.length() - 5) + "\nimport ros.ros1.cpp.messages.sensor_msgs." + connectorIface.substring(0, connectorIface.length() - 5) + "CppImpl\nimport ros.Publisher\n\nval publisher: Publisher[" + connectorIface.substring(0, connectorIface.length() - 5) + "] = " + connectorIface.substring(0, connectorIface.length() - 5) + "CppImpl().createPublisher(node.get_node_identifier(), topic.name)\n\ndef getMsgConsumed(m: " + connectorIface.substring(0, connectorIface.length() - 5) + "): Unit\n\tpublisher.publish(m)"
+
+			ast.parseGeneratedModule(genCode)
+
+		def generateConnectorImpl(l: list.List[archast.PortDecl]): list.List[ast.AST]
+			l.map[ast.AST](p => this.generatePortCode(p))
