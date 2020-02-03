@@ -1,0 +1,6 @@
+import ros.messages.geometry_msgs.TransformStamped
+import ros.tf.TfList
+
+type TFMessageIface
+	def getTfConsumed(tf: TransformStamped): Unit
+	def getTfListConsumed(tfList: TfList): Unit

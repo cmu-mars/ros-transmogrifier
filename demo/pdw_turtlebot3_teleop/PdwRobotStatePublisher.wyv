@@ -1,0 +1,46 @@
+module def PdwRobotStatePublisher(tf_pub: TFMessageIface, tf_static_pub: TFMessageIface, ros: ros.ROS)
+
+import wyvern.option
+
+import ros.KDL
+import ros.messages.sensor_msgs.JointState
+
+import ros.kdl_parser
+import ros.urdf.Model
+
+import JointStateIface
+import JointStateListener
+import RobotStatePublisherCppGlue
+
+import io
+
+type Option = option.Option
+
+var model_parsed: Boolean = false
+var state_publisher: Option[JointStateListener] = option.None[JointStateListener]()
+
+def init(): Unit
+	val model: Model.Model = Model.createModel()
+
+	// The urdf::Model::initParam() function has not been implemented in ROS2.
+	// We assume that this has been determined by some mechanism and that a suitable
+	// replacement has been found out. In this example, we use urdf::Model::initFile()
+	// instead. To do this, we assume that the URDF file has been generated and
+	// stored in cpp/pdw_turtlebot3_fake/urdf/turtlebot3_burger.urdf.
+	if (model.initFile('cpp/pdw_turtlebot3_fake/urdf/pdw_turtlebot3_burger.urdf'))
+			val tree = KDL.createTree()
+			if (kdl_parser.treeFromUrdfModel(model, tree))
+					state_publisher = option.Some[JointStateListener](RobotStatePublisherCppGlue.createJointStateListener(tf_pub, tf_static_pub, ros, model, tree))
+					model_parsed = true
+				else
+					ros.error('Failed to extract kdl tree from xml robot description')
+
+init()
+
+def main(): Unit
+	if (model_parsed)
+			ros.spin()
+
+val joint_states_sub: JointStateIface = new
+	def getMsgConsumed(m: JointState): Unit
+		RobotStatePublisherCppGlue.callbackJointState(state_publisher.get(), m)

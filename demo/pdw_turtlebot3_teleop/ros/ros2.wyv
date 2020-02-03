@@ -1,0 +1,91 @@
+module def ros2(node: ros.Node, python: Python): ros.ROS
+
+// This implementation of ROS libraries conflates the C++ and Python libraries.
+// In a full implementation, the C++ and Python libraries should be kept separate.
+
+import ros.messages.ROSMessages
+import ros.messages.geometry_msgs.ROSGeometryMsgs
+import ros.messages.geometry_msgs.TransformStamped
+import ros.messages.geometry_msgs.Twist
+import ros.messages.sensor_msgs.ROSSensorMsgs
+import ros.messages.sensor_msgs.JointState
+import ros.messages.nav_msgs.ROSNavMsgs
+import ros.messages.nav_msgs.Odometry
+import ros.messages.tf2_msgs.ROSTF2Msgs
+import ros.messages.tf2_msgs.TFMessage
+
+import ros.Duration
+import ros.Rate
+import ros.tf.ROSTf
+import ros.tf.TfList
+import ros.time.CppROSTime
+import ros.time.ROSTime
+
+import python:geometry_msgs
+
+import python:ros_bindings
+
+val messages: ROSMessages = new
+	val geometry_msgs: ROSGeometryMsgs = new
+		def Twist(linear_x: Float, linear_y: Float, linear_z: Float, angular_x: Float, angular_y: Float, angular_z: Float): Twist
+			// https://stackoverflow.com/questions/17330160/how-does-the-property-decorator-work
+			val m = geometry_msgs.msg.Twist()
+
+			val linear = geometry_msgs.msg.Vector3()
+			geometry_msgs.msg.Vector3.x.__set__(linear, linear_x)
+			geometry_msgs.msg.Vector3.y.__set__(linear, linear_y)
+			geometry_msgs.msg.Vector3.z.__set__(linear, linear_z)
+
+			val angular = geometry_msgs.msg.Vector3()
+			geometry_msgs.msg.Vector3.x.__set__(angular, angular_x)
+			geometry_msgs.msg.Vector3.y.__set__(angular, angular_y)
+			geometry_msgs.msg.Vector3.z.__set__(angular, angular_z)
+
+			geometry_msgs.msg.Twist.linear.__set__(m, linear)
+			geometry_msgs.msg.Twist.angular.__set__(m, angular)
+
+			m
+
+		def TransformStamped(): TransformStamped
+			ros_bindings.geometry_msgs_TransformStamped()
+
+	val nav_msgs: ROSNavMsgs = new
+		def Odometry(): Odometry
+			ros_bindings.nav_msgs_Odometry()
+
+	val sensor_msgs: ROSSensorMsgs = new
+		def JointState(): JointState
+			ros_bindings.sensor_msgs_JointState()
+
+	//val tf2_msgs: ROSTF2Msgs = new
+	//	def TFMessage(): TFMessage
+	//		ros_bindings.tf2_msgs_TFMessage()
+
+val time: ROSTime = new
+	def now(): CppROSTime
+		ros_bindings.ros_time_now(node.get_node_identifier())
+
+val tf: ROSTf = new
+	def createTfList(): TfList
+		ros_bindings.std_vector_geometry_msgs_TransformStamped()
+
+def createRateWithFrequency(frequency: Float): Rate
+	ros_bindings.ros_Rate(frequency)
+
+def ok(): Boolean
+	ros_bindings.ros_ok()
+
+def spin(): Unit
+	ros_bindings.ros_spin(node.get_node_identifier())
+
+def spinSome(): Unit
+	ros_bindings.ros_spinSome(node.get_node_identifier())
+
+def _assert(condition: Boolean): Unit
+	ros_bindings.ros_assert(condition)
+
+def error(m: String): Unit
+	ros_bindings.ros_error(m)
+
+def createDurationFromSecondsAndNanoseconds(seconds: Int, nanoseconds: Int): Duration
+	ros_bindings.ros_Duration(seconds, nanoseconds)

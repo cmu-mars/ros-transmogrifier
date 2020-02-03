@@ -1,0 +1,2 @@
+type Rate
+	def sleep(): Boolean

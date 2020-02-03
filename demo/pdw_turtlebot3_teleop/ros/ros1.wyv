@@ -1,0 +1,80 @@
+module ros1: ros.ROS
+
+// This implementation of ROS libraries conflates the C++ and Python libraries.
+// In a full implementation, the C++ and Python libraries should be kept separate.
+
+import ros.messages.ROSMessages
+import ros.messages.geometry_msgs.ROSGeometryMsgs
+import ros.messages.geometry_msgs.TransformStamped
+import ros.messages.geometry_msgs.Twist
+import ros.messages.sensor_msgs.ROSSensorMsgs
+import ros.messages.sensor_msgs.JointState
+import ros.messages.nav_msgs.ROSNavMsgs
+import ros.messages.nav_msgs.Odometry
+import ros.messages.tf2_msgs.ROSTF2Msgs
+import ros.messages.tf2_msgs.TFMessage
+
+import ros.Duration
+import ros.Rate
+import ros.tf.ROSTf
+import ros.tf.TfList
+import ros.time.CppROSTime
+import ros.time.ROSTime
+
+import python:geometry_msgs
+import python:geometry_msgs.msg
+
+import python:ros_bindings
+
+val messages: ROSMessages = new
+	val geometry_msgs: ROSGeometryMsgs = new
+		def Twist(linear_x: Float, linear_y: Float, linear_z: Float, angular_x: Float, angular_y: Float, angular_z: Float): Twist
+			val linear = geometry_msgs.msg.Vector3(linear_x, linear_y, linear_z)
+
+			val angular = geometry_msgs.msg.Vector3(angular_x, angular_y, angular_z)
+
+			geometry_msgs.msg.Twist(linear, angular)
+
+		def TransformStamped(): TransformStamped
+			ros_bindings.geometry_msgs_TransformStamped()
+
+	val nav_msgs: ROSNavMsgs = new
+		def Odometry(): Odometry
+			ros_bindings.nav_msgs_Odometry()
+
+	val sensor_msgs: ROSSensorMsgs = new
+		def JointState(): JointState
+			ros_bindings.sensor_msgs_JointState()
+
+	//val tf2_msgs: ROSTF2Msgs = new
+	//	def TFMessage(): TFMessage
+	//		ros_bindings.tf2_msgs_TFMessage()
+
+val time: ROSTime = new
+	def now(): CppROSTime
+		ros_bindings.ros_time_now()
+
+val tf: ROSTf = new
+	def createTfList(): TfList
+		ros_bindings.std_vector_geometry_msgs_TransformStamped()
+
+def createRateWithFrequency(frequency: Float): Rate
+	ros_bindings.ros_Rate(frequency)
+
+def ok(): Boolean
+	ros_bindings.ros_ok()
+
+def spin(): Unit
+	ros_bindings.ros_spin()
+
+def spinSome(): Unit
+	ros_bindings.ros_spinSome()
+
+def _assert(condition: Boolean): Unit
+	ros_bindings.ros_assert(condition)
+
+def error(m: String): Unit
+	ros_bindings.ros_error(m)
+
+def createDurationFromSecondsAndNanoseconds(seconds: Int, nanoseconds: Int): Duration
+	ros_bindings.ros_Duration(seconds, nanoseconds)

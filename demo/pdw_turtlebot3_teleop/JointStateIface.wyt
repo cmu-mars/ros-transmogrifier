@@ -1,0 +1,4 @@
+import ros.messages.sensor_msgs.JointState
+
+resource type JointStateIface
+	def getMsgConsumed(m: JointState): Unit

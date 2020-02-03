@@ -1,0 +1,7 @@
+module TwistImpl
+
+import python:geometry_msgs
+import python:geometry_msgs.msg
+
+def createPublisher(node_id: Dyn, topic_name: String): Dyn
+	node_id.Publisher(topic_name, geometry_msgs.msg.Twist)

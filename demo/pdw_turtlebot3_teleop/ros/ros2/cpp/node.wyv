@@ -1,0 +1,8 @@
+module def node(node_name: String)
+
+import python:node_init
+
+val node_handle = node_init.init(node_name)
+
+def get_node_identifier(): Dyn
+	node_handle

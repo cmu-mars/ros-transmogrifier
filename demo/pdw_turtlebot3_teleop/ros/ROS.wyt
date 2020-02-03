@@ -1,0 +1,20 @@
+import ros.Duration
+import ros.Rate
+
+import ros.messages.ROSMessages
+import ros.tf.ROSTf
+import ros.time.ROSTime
+
+resource type ROS
+	val messages: ROSMessages
+	val tf: ROSTf
+	val time: ROSTime
+	def createRateWithFrequency(frequency: Float): Rate
+	def ok(): Boolean
+	def spin(): Unit
+	def spinSome(): Unit
+	// FIXME: The following method should preferably be named assert
+	//        but assert is a keyword in Wyvern.
+	def _assert(condition: Boolean): Unit
+	def error(m: String): Unit
+	def createDurationFromSecondsAndNanoseconds(seconds: Int, nanoseconds: Int): Duration

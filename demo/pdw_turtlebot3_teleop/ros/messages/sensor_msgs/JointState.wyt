@@ -1,0 +1,3 @@
+type JointState
+	// This is a workaround to me being unable to declare JointState an abstract type
+	type Header

@@ -1,0 +1,8 @@
+resource type Twist
+	val linear: Vector3
+	val angular: Vector3
+
+resource type Vector3
+	var x: Float
+	var y: Float
+	var z: Float

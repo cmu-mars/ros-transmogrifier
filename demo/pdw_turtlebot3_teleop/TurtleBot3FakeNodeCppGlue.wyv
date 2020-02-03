@@ -1,0 +1,14 @@
+import python:CppTurtleBot3Fake
+
+import ros.messages.geometry_msgs.Twist
+import ros.ROS
+import JointStateIface
+import OdometryIface
+import TFMessageIface
+import TurtleBot3Fake
+
+def createFakeTurtleBot3(joint_states_pub: JointStateIface, odom_pub: OdometryIface, tf_pub: TFMessageIface, ros: ROS): TurtleBot3Fake
+	CppTurtleBot3Fake.Turtlebot3Fake(joint_states_pub, odom_pub, tf_pub, ros)
+
+def commandVelocityCallback(fake_turtlebot3: TurtleBot3Fake, m: Twist): Unit
+	CppTurtleBot3Fake.commandVelocityCallback(fake_turtlebot3, m)

@@ -1,0 +1,3 @@
+type Publisher
+	type T
+	def publish(m: this.T): Unit

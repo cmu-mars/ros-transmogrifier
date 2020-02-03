@@ -1,0 +1,28 @@
+module def TFMessageCppImpl()
+
+import python:ros_bindings
+
+import ros.messages.geometry_msgs.TransformStamped
+import ros.tf.StaticTransformBroadcaster
+import ros.tf.TfList
+import ros.tf.TransformBroadcaster
+
+def createTransformBroadcaster(): TransformBroadcaster
+	new
+		val tf_broadcaster = ros_bindings.tf2_ros_TransformBroadcaster()
+
+		def sendTf(tf: TransformStamped): Unit
+			this.tf_broadcaster.sendTransform(tf)
+
+		def sendTfList(tfList: TfList): Unit
+			this.tf_broadcaster.sendTransform(tfList)
+
+def createStaticTransformBroadcaster(): StaticTransformBroadcaster
+	new
+		val static_tf_broadcaster = ros_bindings.tf2_ros_StaticTransformBroadcaster()
+
+		def sendTf(tf: TransformStamped): Unit
+			this.static_tf_broadcaster.sendTransform(tf)
+
+		def sendTfList(tfList: TfList): Unit
+			this.static_tf_broadcaster.sendTransform(tfList)

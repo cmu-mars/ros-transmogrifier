@@ -1,0 +1,7 @@
+import python:ros_bindings
+
+type Model
+	def initFile(filename: String): Boolean
+
+def createModel(): Model
+	ros_bindings.urdf_Model()

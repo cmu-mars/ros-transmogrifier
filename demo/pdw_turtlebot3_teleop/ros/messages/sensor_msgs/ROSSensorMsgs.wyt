@@ -1,0 +1,4 @@
+import ros.messages.sensor_msgs.JointState
+
+type ROSSensorMsgs
+	def JointState(): JointState

@@ -1,0 +1,4 @@
+import ros.messages.nav_msgs.Odometry
+
+type OdometryIface
+	def getMsgConsumed(m: Odometry): Unit

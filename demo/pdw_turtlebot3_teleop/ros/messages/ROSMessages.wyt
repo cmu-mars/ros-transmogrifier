@@ -1,0 +1,8 @@
+import ros.messages.geometry_msgs.ROSGeometryMsgs
+import ros.messages.nav_msgs.ROSNavMsgs
+import ros.messages.sensor_msgs.ROSSensorMsgs
+
+type ROSMessages
+	val geometry_msgs: ROSGeometryMsgs
+	val nav_msgs: ROSNavMsgs
+	val sensor_msgs: ROSSensorMsgs

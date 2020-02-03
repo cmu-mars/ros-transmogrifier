@@ -1,0 +1,2 @@
+type TurtleBot3Fake
+	def update(): Boolean

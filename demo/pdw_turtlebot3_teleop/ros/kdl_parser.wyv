@@ -1,0 +1,7 @@
+import python:ros_bindings
+
+import ros.KDL
+import ros.urdf.Model
+
+def treeFromUrdfModel(model: Model.Model, tree: KDL.Tree): Boolean
+	ros_bindings.kdl_parser_treeFromUrdfModel(model, tree)

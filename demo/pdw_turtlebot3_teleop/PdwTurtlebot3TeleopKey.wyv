@@ -1,0 +1,129 @@
+module def PdwTurtlebot3TeleopKey(cmd_vel_pub: TwistIface, ros: ros.ROS)
+
+import io
+//import util
+
+val BURGER_MAX_LIN_VEL = 0.22
+val BURGER_MAX_ANG_VEL = 2.84
+
+val WAFFLE_MAX_LIN_VEL = 0.26
+val WAFFLE_MAX_ANG_VEL = 1.82
+
+val LIN_VEL_STEP_SIZE = 0.01
+val ANG_VEL_STEP_SIZE = 0.1
+
+var msg: String = 'Control Your TurtleBot3!\n'
+msg = msg + '---------------------------\n'
+msg = msg + 'Moving around:\n'
+msg = msg + '        w\n'
+msg = msg + '   a    s    d\n'
+msg = msg + '        x\n'
+msg = msg + '\n'
+msg = msg + 'w/x : increase/decrease linear velocity (Burger : ~ 0.22, Waffle and Waffle Pi : ~ 0.26)\n'
+msg = msg + 'a/d : increase/decrease angular velocity (Burger : ~ 2.84, Waffle and Waffle Pi : ~ 1.82)\n'
+msg = msg + '\n'
+msg = msg + 'space key, s : force stop\n'
+msg = msg + '\n'
+msg = msg + 'CTRL-C to quit\n'
+
+// TODO: This should be read from a parameter.
+val turtlebot3_model = 'burger'
+
+def print_vels(target_linear_velocity: Float, target_angular_velocity: Float): Unit
+	io.print('currently:\tlinear velocity ')
+	io.printFloat(target_linear_velocity)
+	io.print('\tangular velocity ')
+	io.printFloat(target_angular_velocity)
+	io.print(' ')
+	io.println()
+
+// TODO: Implement min and max functions in Wyvern library
+def makeSimpleProfile(output: Float, input: Float, slop: Float): Float
+	if (input > output && input < output + slop)
+			input
+		elif (input > output)
+			output + slop
+		elif (input < output && input > output - slop)
+			input
+		elif (input < output)
+			output - slop
+		else
+			input
+
+def constrain(input: Float, low: Float, high: Float): Float
+	if (input < low)
+			low
+		elif (input > high)
+			high
+		else
+			input
+
+def checkLinearLimitVelocity(velocity: Float): Float
+	if (turtlebot3_model == 'waffle' || turtlebot3_model == 'waffle_pi')
+			constrain(velocity, -WAFFLE_MAX_LIN_VEL, WAFFLE_MAX_LIN_VEL)
+		else
+			constrain(velocity, -BURGER_MAX_LIN_VEL, BURGER_MAX_LIN_VEL)
+
+def checkAngularLimitVelocity(velocity: Float): Float
+	if (turtlebot3_model == 'waffle' || turtlebot3_model == 'waffle_pi')
+			constrain(velocity, -WAFFLE_MAX_ANG_VEL, WAFFLE_MAX_ANG_VEL)
+		else
+			constrain(velocity, -BURGER_MAX_LIN_VEL, BURGER_MAX_LIN_VEL)
+
+def doTeleop(status: Int, target_linear_velocity: Float, target_angular_velocity: Float, control_linear_velocity: Float, control_angular_velocity: Float): Unit
+	var loopAgain: Boolean = true
+	var new_status: Int = status
+	var new_target_linear_velocity: Float = target_linear_velocity
+	var new_target_angular_velocity: Float = target_angular_velocity
+	var new_control_linear_velocity: Float = control_linear_velocity
+	var new_control_angular_velocity: Float = control_angular_velocity
+
+	val key = io.getKey()
+	if (key == 'w')
+			new_target_linear_velocity = checkLinearLimitVelocity(new_target_linear_velocity + LIN_VEL_STEP_SIZE)
+			new_status = new_status + 1
+			print_vels(new_target_linear_velocity, new_target_angular_velocity)
+		elif (key == 'x')
+			new_target_linear_velocity = checkLinearLimitVelocity(new_target_linear_velocity - LIN_VEL_STEP_SIZE)
+			new_status = new_status + 1
+			print_vels(new_target_linear_velocity, new_target_angular_velocity)
+		elif (key == 'a')
+			new_target_angular_velocity = checkAngularLimitVelocity(new_target_angular_velocity + ANG_VEL_STEP_SIZE)
+			new_status = new_status + 1
+			print_vels(new_target_linear_velocity, new_target_angular_velocity)
+		elif (key == 'd')
+			new_target_angular_velocity = checkAngularLimitVelocity(new_target_angular_velocity - ANG_VEL_STEP_SIZE)
+			new_status = new_status + 1
+			print_vels(new_target_linear_velocity, new_target_angular_velocity)
+		elif (key == ' ' || key == 's')
+			new_target_linear_velocity = 0.0
+			new_control_linear_velocity = 0.0
+			new_target_angular_velocity = 0.0
+			new_control_angular_velocity = 0.0
+			print_vels(new_target_linear_velocity, new_target_angular_velocity)
+			//unit
+		elif (key == '\O3')
+			loopAgain = false
+			//unit
+
+	if (new_status == 20)
+			io.print(msg)
+			new_status = 0
+
+	new_control_linear_velocity = makeSimpleProfile(new_control_linear_velocity, new_target_linear_velocity, LIN_VEL_STEP_SIZE / 2.0)
+	new_control_angular_velocity = makeSimpleProfile(new_control_angular_velocity, new_target_angular_velocity, ANG_VEL_STEP_SIZE / 2.0)
+	val twist = ros.messages.geometry_msgs.Twist(new_control_linear_velocity, 0.0, 0.0, 0.0, 0.0, new_control_angular_velocity)
+
+	// TODO: Add call to publish the Twist message here.
+	cmd_vel_pub.getMsgConsumed(twist)
+
+	if (loopAgain)
+			doTeleop(new_status, new_target_linear_velocity, new_target_angular_velocity, new_control_linear_velocity, new_control_angular_velocity)
+		else
+			unit
+
+def main(): Unit
+	// TODO: Stop the robot on exit.
+	//util.setTerminationCleanupHandler(() => ros.print('Bye!'))
+	io.print(msg)
+	doTeleop(0, 0.0, 0.0, 0.0, 0.0)

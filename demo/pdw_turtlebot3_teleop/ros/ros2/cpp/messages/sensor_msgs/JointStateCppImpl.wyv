@@ -1,0 +1,15 @@
+module def JointStateCppImpl()
+
+import python:ros.ros2.cpp.messages.sensor_msgs.JointStateCppImpl
+
+import ros.messages.sensor_msgs.JointState
+import ros.Publisher
+import ros.Subscriber
+
+val pubsub_creator = JointStateCppImpl.JointStateCppImpl()
+
+def createPublisher(node_id: Dyn, topic_name: String): Publisher
+	pubsub_creator.createPublisher(node_id, topic_name)
+
+def createSubscriber(node_id: Dyn, topic_name: String, callback: JointState -> Unit): Subscriber
+	pubsub_creator.createSubscriber(node_id, topic_name, callback)

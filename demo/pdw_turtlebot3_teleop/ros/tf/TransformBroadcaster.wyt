@@ -1,0 +1,6 @@
+import ros.messages.geometry_msgs.TransformStamped
+import ros.tf.TfList
+
+type TransformBroadcaster
+	def sendTf(tf: TransformStamped): Unit
+	def sendTfList(tfList: TfList): Unit

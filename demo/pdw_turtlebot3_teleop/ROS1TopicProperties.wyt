@@ -1,0 +1,2 @@
+type ROS1TopicProperties
+	val name: String

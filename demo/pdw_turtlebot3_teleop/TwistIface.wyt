@@ -1,0 +1,4 @@
+import ros.messages.geometry_msgs.Twist
+
+resource type TwistIface
+	def getMsgConsumed(m: Twist): Unit

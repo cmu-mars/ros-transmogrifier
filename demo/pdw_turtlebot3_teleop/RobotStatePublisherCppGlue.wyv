@@ -1,0 +1,16 @@
+import python:CppJointStateListener
+
+import ros.messages.sensor_msgs.JointState
+import ros.KDL
+import ros.ROS
+import ros.urdf.Model
+
+import TFMessageIface
+
+import JointStateListener
+
+def createJointStateListener(tf_pub: TFMessageIface, tf_static_pub: TFMessageIface, ros: ROS, model: Model.Model, tree: KDL.Tree): JointStateListener
+	CppJointStateListener.JointStateListener(tf_pub, tf_static_pub, ros, tree, model)
+
+def callbackJointState(state_publisher: JointStateListener, m: JointState): Unit
+	state_publisher.callbackJointState(m)

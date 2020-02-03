@@ -1,0 +1,4 @@
+import ros.messages.tf2_msgs.TFMessage
+
+type ROSTF2Msgs
+	def TFMessage(): TFMessage

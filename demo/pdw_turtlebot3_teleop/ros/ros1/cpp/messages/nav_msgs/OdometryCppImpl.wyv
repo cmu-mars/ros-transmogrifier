@@ -1,0 +1,12 @@
+// FIXME: Using module def here is a hack to get around the NullPointerException
+//        that is thrown when it isn't used.
+module def OdometryCppImpl()
+
+import python:ros.ros1.cpp.messages.nav_msgs.OdometryCppImpl
+
+import ros.Publisher
+
+val publisher_creator = OdometryCppImpl.OdometryCppImpl()
+
+def createPublisher(node_id: Dyn, topic_name: String): Publisher
+	publisher_creator.createPublisher(node_id, topic_name)

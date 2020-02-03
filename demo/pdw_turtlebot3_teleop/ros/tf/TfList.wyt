@@ -1,0 +1,4 @@
+import ros.messages.geometry_msgs.TransformStamped
+
+type TfList
+	def add(tf: TransformStamped): Unit

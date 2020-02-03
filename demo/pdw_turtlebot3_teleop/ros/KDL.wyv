@@ -1,0 +1,7 @@
+import python:ros_bindings
+
+type Tree
+	type T
+
+def createTree(): Tree
+	ros_bindings.KDL_Tree()

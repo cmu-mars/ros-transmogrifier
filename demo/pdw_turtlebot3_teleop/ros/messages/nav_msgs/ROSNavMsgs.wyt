@@ -1,0 +1,4 @@
+import ros.messages.nav_msgs.Odometry
+
+type ROSNavMsgs
+	def Odometry(): Odometry

@@ -1,0 +1,11 @@
+module def node(node_name: String, python: Python)
+
+import python:rospy
+
+rospy.init_node(node_name)
+
+// FIXME: Given that rospy is being returned from this function,
+//        it should be renamed to something like get_node_configurator()
+//        or something like that.
+def get_node_identifier(): Dyn
+	rospy

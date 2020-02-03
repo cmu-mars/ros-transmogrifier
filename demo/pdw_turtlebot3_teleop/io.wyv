@@ -1,0 +1,40 @@
+require stdout
+
+import python:py_builtins
+import python:select
+import python:sys
+import python:termios
+import python:tty
+
+def getKey(): String
+	val settings = termios.tcgetattr(sys.stdin)
+
+	tty.setraw(sys.stdin.fileno())
+
+	val empty_list = py_builtins.list()
+
+	val read_list = py_builtins.list()
+	read_list.append(sys.stdin)
+
+	val ready_objs = select.select(read_list, empty_list, empty_list, 0.1)
+	val rlist = py_builtins.list(ready_objs).pop(0)
+	val rlist_len: Int = py_builtins.len(rlist)
+
+	var key: String = ''
+	if (rlist_len > 0)
+			key = sys.stdin.read(1)
+		else
+			key = ''
+
+	termios.tcsetattr(sys.stdin, termios.TCSADRAIN, settings)
+
+	key
+
+def print(s: String): Unit
+	stdout.print(s)
+
+def printFloat(f: Float): Unit
+	stdout.printFloat(f)
+
+def println(): Unit
+	stdout.println()

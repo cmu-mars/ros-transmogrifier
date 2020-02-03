@@ -1,0 +1,4 @@
+import ros.time.CppROSTime
+
+type ROSTime
+	def now(): CppROSTime

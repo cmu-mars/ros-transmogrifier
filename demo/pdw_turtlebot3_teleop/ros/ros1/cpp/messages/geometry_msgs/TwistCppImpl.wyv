@@ -1,0 +1,13 @@
+// FIXME: Using module def here is a hack to get around the NullPointerException
+//        that is thrown when it isn't used.
+module def TwistCppImpl()
+
+import python:ros.ros1.cpp.messages.geometry_msgs.TwistCppImpl
+
+import ros.messages.geometry_msgs.Twist
+import ros.Subscriber
+
+val subscriber_creator = TwistCppImpl.TwistCppImpl()
+
+def createSubscriber(node_id: Dyn, topic_name: String, callback: Twist -> Unit): Subscriber
+	subscriber_creator.createSubscriber(node_id, topic_name, callback)

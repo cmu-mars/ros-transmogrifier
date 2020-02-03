@@ -1,0 +1,9 @@
+module def node(node_name: String, python: Python)
+
+import python:rclpy
+
+rclpy.init()
+val node = rclpy.create_node(node_name)
+
+def get_node_identifier(): Dyn
+	node

@@ -1,0 +1,27 @@
+module def PdwTurtlebot3FakeNode(joint_states_pub: JointStateIface, odom_pub: OdometryIface, tf_pub: TFMessageIface, ros: ros.ROS)
+
+import ros.messages.geometry_msgs.Twist
+import ros.Rate
+
+import TurtleBot3Fake
+import TurtleBot3FakeNodeCppGlue
+import TwistIface
+
+val fakeTurtleBot3 = TurtleBot3FakeNodeCppGlue.createFakeTurtleBot3(joint_states_pub, odom_pub, tf_pub, ros)
+
+def update(loop_rate: Rate): Unit
+	if (ros.ok())
+			fakeTurtleBot3.update()
+			ros.spinSome()
+			loop_rate.sleep()
+			update(loop_rate)
+		else
+			unit
+
+def main(): Unit
+	val loop_rate = ros.createRateWithFrequency(30.0)
+	update(loop_rate)
+
+val cmd_vel_sub: TwistIface = new
+	def getMsgConsumed(m: Twist): Unit
+		TurtleBot3FakeNodeCppGlue.commandVelocityCallback(fakeTurtleBot3, m)

@@ -1,0 +1,2 @@
+type Node
+	def get_node_identifier(): Dyn

@@ -1,0 +1,2 @@
+type ROS1TfProperties
+	val is_static: Boolean
